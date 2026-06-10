@@ -7,10 +7,10 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>search-engine-core</artifactId>
+    <artifactId>search-engine-spring-boot3-starter</artifactId>
     <packaging>jar</packaging>
 
-    <name>search-engine-core</name>
+    <name>search-engine-spring-boot3-starter</name>
     <url>http://maven.apache.org</url>
 
     <properties>
@@ -18,26 +18,28 @@
     </properties>
 
     <dependencies>
+        <!-- Spring Boot 自动配置核心 -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-elasticsearch</artifactId>
+            <artifactId>spring-boot-autoconfigure</artifactId>
+            <optional>true</optional>
         </dependency>
+        <!-- 配置元数据生成（推荐） -->
         <dependency>
-            <groupId>com.meilisearch.sdk</groupId>
-            <artifactId>meilisearch-java</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>cn.zhangdx</groupId>
-            <artifactId>common-support</artifactId>
+            <artifactId>search-engine-core</artifactId>
+            <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>fastjson</artifactId>
-            <optional>true</optional>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>3.8.1</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>
