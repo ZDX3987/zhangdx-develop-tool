@@ -3,6 +3,7 @@ package cn.zhangdx.search.converter;
 import lombok.Data;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -17,16 +18,25 @@ public class SearchEngineConverterManager {
 
     @SuppressWarnings("unchecked")
     public <S, T> T convert(S sourceObject) {
+        if (converterList == null || converterList.isEmpty()) {
+            return (T) sourceObject;
+        }
         for (SearchEngineConverter<?, ?> converter : converterList) {
             if (converter.supports(sourceObject.getClass())) {
                 return ((SearchEngineConverter<S, T>) converter).convert(sourceObject);
             }
         }
-        throw new UnsupportedOperationException("no support converter for " + sourceObject.getClass());
+        return (T) sourceObject;
     }
 
     @SuppressWarnings("unchecked")
     public <S, T> List<T> batchConvert(Collection<S> sourceObject) {
+        if (sourceObject == null || sourceObject.isEmpty()) {
+            return Collections.emptyList();
+        }
+        if (converterList == null || converterList.isEmpty()) {
+            return sourceObject.stream().map(source -> (T) source).toList();
+        }
         Object[] sourceObjectArray = sourceObject.toArray();
         Class<?> sourceObjectType = sourceObjectArray[0].getClass();
         for (SearchEngineConverter<?, ?> converter : converterList) {
@@ -34,6 +44,6 @@ public class SearchEngineConverterManager {
                 return ((SearchEngineConverter<S, T>) converter).batchConvert(sourceObject);
             }
         }
-        throw new UnsupportedOperationException("no support converter for " + sourceObject.getClass());
+        return sourceObject.stream().map(source -> (T) source).toList();
     }
 }

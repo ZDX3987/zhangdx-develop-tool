@@ -3,7 +3,10 @@ package cn.zhangdx.search.handler;
 import cn.zhangdx.search.converter.SearchEngineConverterManager;
 import cn.zhangdx.search.query.SearchEngineQuery;
 import cn.zhangdx.search.query.SearchEngineSaveRequest;
+import cn.zhangdx.support.PageQuery;
+import cn.zhangdx.support.ResultPage;
 import co.elastic.clients.elasticsearch._types.query_dsl.QueryBuilders;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.elasticsearch.client.elc.NativeQueryBuilder;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.SearchHit;
@@ -31,10 +34,29 @@ public class EsSearchEngineHandler extends AbstractSearchEngineHandler {
 
     @Override
     protected <E> List<E> doSearchDocument(SearchEngineQuery searchEngineQuery) {
-        NativeQueryBuilder queryBuilder = new NativeQueryBuilder();
-        queryBuilder.withQuery(QueryBuilders.queryString(qb -> qb.query(searchEngineQuery.getQueryString())));
+        NativeQueryBuilder queryBuilder = buildNativeQuery(searchEngineQuery);
         SearchHits<E> searchHits = elasticsearchOperations.search(queryBuilder.build(), searchEngineQuery.getSupportType());
         return searchHits.getSearchHits().stream().map(SearchHit::getContent).toList();
+    }
+
+    /**
+     * 关键字查询分页内容
+     *
+     * @param searchEngineQuery 搜索参数
+     * @return 返回搜索到的内容
+     */
+    @Override
+    public ResultPage<?> searchDocumentPage(SearchEngineQuery searchEngineQuery) {
+        PageQuery<?> pageQuery = searchEngineQuery.getPageQuery();
+        NativeQueryBuilder queryBuilder = buildNativeQuery(searchEngineQuery);
+        int pageNumber = Math.max((int) pageQuery.getCurrent() - 1, 0);
+        queryBuilder.withPageable(PageRequest.of(pageNumber, (int) pageQuery.getPageSize()));
+        SearchHits<?> searchHits = elasticsearchOperations.search(queryBuilder.build(), searchEngineQuery.getSupportType());
+        List<?> sourceRecords = searchHits.getSearchHits().stream().map(SearchHit::getContent).toList();
+        ResultPage<?> resultPage = new ResultPage<>(pageQuery.getCurrent(), pageQuery.getPageSize());
+        resultPage.setRecords(this.applyConverter(sourceRecords));
+        resultPage.setTotal(searchHits.getTotalHits());
+        return resultPage;
     }
 
     /**
@@ -61,6 +83,9 @@ public class EsSearchEngineHandler extends AbstractSearchEngineHandler {
      */
     @Override
     public <E> void batchSaveDocument(Collection<E> documents, SearchEngineSaveRequest<E> saveRequest) {
+        if (documents == null || documents.isEmpty()) {
+            return;
+        }
         IndexCoordinates indexCoordinates = IndexCoordinates.of(saveRequest.getIndexName());
         if (Boolean.TRUE.equals(saveRequest.getRefresh())) {
             Query query = new StringQuery(StringQuery.MATCH_ALL);
@@ -70,5 +95,11 @@ public class EsSearchEngineHandler extends AbstractSearchEngineHandler {
             elasticsearchOperations.delete(query, aClass, indexCoordinates);
         }
         elasticsearchOperations.save(documents, indexCoordinates);
+    }
+
+    private NativeQueryBuilder buildNativeQuery(SearchEngineQuery searchEngineQuery) {
+        NativeQueryBuilder queryBuilder = new NativeQueryBuilder();
+        queryBuilder.withQuery(QueryBuilders.queryString(qb -> qb.query(searchEngineQuery.getQueryString())));
+        return queryBuilder;
     }
 }
