@@ -29,9 +29,7 @@ import java.util.List;
 @EnableConfigurationProperties({SearchEngineProperties.class})
 public class SearchEngineAutoConfiguration {
 
-
-
-    @Configuration
+    @Configuration(proxyBeanMethods = false)
     @ConditionalOnClass(Client.class)
     @ConditionalOnProperty(prefix = "zhangdx.search-engine", name = "type", havingValue = "meili-search", matchIfMissing = true)
     static class MeiliSearchConfiguration {
@@ -50,8 +48,7 @@ public class SearchEngineAutoConfiguration {
         }
     }
 
-
-    @Configuration
+    @Configuration(proxyBeanMethods = false)
     @ConditionalOnBean(ElasticsearchOperations.class)
     @ConditionalOnProperty(prefix = "zhangdx.search-engine", name = "type", havingValue = "elasticsearch")
     static class EsSearchConfiguration {
