@@ -2,8 +2,8 @@ package cn.zhangdx.search.handler;
 
 import cn.zhangdx.search.converter.SearchEngineConverterManager;
 import cn.zhangdx.search.query.SearchEngineQuery;
-import cn.zhangdx.support.PageQuery;
-import cn.zhangdx.support.ResultPage;
+import cn.zhangdx.support.pagination.PageQuery;
+import cn.zhangdx.support.pagination.ResultPage;
 
 import java.util.List;
 

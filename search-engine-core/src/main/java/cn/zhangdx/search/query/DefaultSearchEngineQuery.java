@@ -1,7 +1,7 @@
 package cn.zhangdx.search.query;
 
 import cn.zhangdx.search.utils.SearchAnnotationUtil;
-import cn.zhangdx.support.PageQuery;
+import cn.zhangdx.support.pagination.PageQuery;
 import lombok.Data;
 
 /**

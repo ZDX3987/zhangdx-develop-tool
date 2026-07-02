@@ -2,7 +2,7 @@ package cn.zhangdx.search.handler;
 
 import cn.zhangdx.search.query.SearchEngineQuery;
 import cn.zhangdx.search.query.SearchEngineSaveRequest;
-import cn.zhangdx.support.ResultPage;
+import cn.zhangdx.support.pagination.ResultPage;
 
 import java.util.Collection;
 import java.util.List;

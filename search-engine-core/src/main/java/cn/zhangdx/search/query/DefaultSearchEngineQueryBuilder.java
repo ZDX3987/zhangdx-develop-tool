@@ -1,6 +1,6 @@
 package cn.zhangdx.search.query;
 
-import cn.zhangdx.support.PageQuery;
+import cn.zhangdx.support.pagination.PageQuery;
 
 /**
  *

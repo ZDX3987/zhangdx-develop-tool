@@ -1,4 +1,4 @@
-package cn.zhangdx.support;
+package cn.zhangdx.support.pagination;
 
 import lombok.Data;
 
