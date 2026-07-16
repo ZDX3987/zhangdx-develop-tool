@@ -9,9 +9,9 @@
 
     <artifactId>search-engine-core</artifactId>
     <packaging>jar</packaging>
-
     <name>search-engine-core</name>
     <url>http://maven.apache.org</url>
+    <version>1.0.1-SNAPSHOT</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

@@ -71,6 +71,11 @@
         <artifactId>common-support</artifactId>
         <version>1.0-SNAPSHOT</version>
       </dependency>
+      <dependency>
+        <groupId>cn.zhangdx</groupId>
+        <artifactId>search-engine-core</artifactId>
+        <version>1.0.1-SNAPSHOT</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 </project>

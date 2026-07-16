@@ -96,7 +96,7 @@ public class MeiliSearchEngineHandler extends AbstractSearchEngineHandler {
 
     private SearchRequest genSearchRequest(SearchEngineQuery searchEngineQuery) {
         PageQuery<?> pageQuery = searchEngineQuery.getPageQuery();
-        return SearchRequest.builder().q(searchEngineQuery.getQueryString())
+        return SearchRequest.builder().locales(new String[]{"cmn"}).q(searchEngineQuery.getQueryString())
                 .highlightPreTag("<span class='search-keyword-highlight'>").highlightPostTag("</span>")
                 .attributesToHighlight(searchEngineQuery.getHighlightFields())
                 .page((int) pageQuery.getCurrent()).hitsPerPage((int) pageQuery.getPageSize())
