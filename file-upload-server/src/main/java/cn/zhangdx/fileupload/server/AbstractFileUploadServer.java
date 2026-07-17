@@ -3,6 +3,7 @@ package cn.zhangdx.fileupload.server;
 import cn.zhangdx.fileupload.exception.FileUploadException;
 import cn.zhangdx.fileupload.processor.FileUploadProcessorChain;
 import cn.zhangdx.fileupload.request.FileUploadRequest;
+import cn.zhangdx.fileupload.result.FileUploadResult;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -44,16 +45,53 @@ public abstract class AbstractFileUploadServer implements FileUploadServer {
      */
     @Override
     public String uploadFile(FileUploadRequest fileUploadRequest) throws FileUploadException {
-        if (fileUploadProcessorChain != null) {
-            fileUploadProcessorChain.doProcess(fileUploadRequest);
+        return uploadFileWithResult(fileUploadRequest).accessibleUrl();
+    }
+
+    @Override
+    public FileUploadResult uploadFileWithResult(FileUploadRequest fileUploadRequest) throws FileUploadException {
+        if (fileUploadRequest == null) {
+            throw FileUploadException.uploadFail("文件上传请求不能为空");
         }
-        List<String> filePathList = new ArrayList<>(fileUploadRequest.getFilePath());
-        filePathList.add(fileUploadRequest.getFileName());
-        String fullFilePath = String.join("/", filePathList);
-        try (InputStream inputStream = fileUploadRequest.openFileInputStream()) {
-            return doUploadFile(inputStream, fullFilePath);
+        try (fileUploadRequest) {
+            validateRequest(fileUploadRequest);
+            if (fileUploadProcessorChain != null) {
+                fileUploadProcessorChain.doProcess(fileUploadRequest);
+            }
+            validateFileName(fileUploadRequest.getFileName());
+            List<String> filePathList = new ArrayList<>(fileUploadRequest.getFilePath() == null
+                    ? List.of() : fileUploadRequest.getFilePath());
+            filePathList.forEach(this::validatePathSegment);
+            filePathList.add(fileUploadRequest.getFileName());
+            String fullFilePath = String.join("/", filePathList);
+            InputStream inputStream = fileUploadRequest.openFileInputStream();
+            String accessibleUrl = doUploadFile(inputStream, fullFilePath);
+            return new FileUploadResult(fullFilePath, accessibleUrl);
         } catch (IOException e) {
             throw FileUploadException.uploadFail(e.getMessage());
+        }
+    }
+
+    private void validateRequest(FileUploadRequest fileUploadRequest) {
+        if (fileUploadRequest.getFile() == null && fileUploadRequest.getFileInputStream() == null) {
+            throw FileUploadException.uploadFail("上传文件内容不能为空");
+        }
+        validateFileName(fileUploadRequest.getFileName());
+    }
+
+    private void validateFileName(String fileName) {
+        if (fileName == null || fileName.isBlank()) {
+            throw FileUploadException.uploadFail("上传文件名不能为空");
+        }
+        if (fileName.contains("/") || fileName.contains("\\")) {
+            throw FileUploadException.uploadFail("上传文件名不能包含路径分隔符");
+        }
+    }
+
+    private void validatePathSegment(String pathSegment) {
+        if (pathSegment == null || pathSegment.isBlank() || ".".equals(pathSegment) || "..".equals(pathSegment)
+                || pathSegment.contains("/") || pathSegment.contains("\\")) {
+            throw FileUploadException.uploadFail("非法的文件路径片段: " + pathSegment);
         }
     }
 

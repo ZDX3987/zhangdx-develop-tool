@@ -38,8 +38,10 @@ public class FileUploadServerAutoConfiguration {
     @Bean
     @Order(2)
     @ConditionalOnProperty(prefix = "zhangdx.file-upload.image-config", name = "only-webp",  havingValue = "true")
-    public FileUploadProcessor imageFileUploadProcessor() {
-        return new ImageFileUploadProcessor();
+    public FileUploadProcessor imageFileUploadProcessor(FileUploadServerProperties properties) {
+        FileUploadServerProperties.ImageConfig imageConfig = properties.getImageConfig();
+        return new ImageFileUploadProcessor(imageConfig.getCompressionQuality(), imageConfig.getMaxPixels(),
+                imageConfig.getMaxConcurrentConversions());
     }
 
     @Bean

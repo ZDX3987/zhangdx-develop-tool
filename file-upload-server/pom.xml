@@ -31,9 +31,8 @@
             <artifactId>aliyun-sdk-oss</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.sejda.imageio</groupId>
+            <groupId>io.github.darkxanter</groupId>
             <artifactId>webp-imageio</artifactId>
-            <version>0.1.6</version>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>

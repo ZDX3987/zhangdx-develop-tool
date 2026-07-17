@@ -13,7 +13,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 
-import java.io.IOException;
 import java.io.InputStream;
 
 /**
@@ -36,10 +35,10 @@ public class AliYunOssFileUploadServer extends AbstractFileUploadServer implemen
     @Override
     protected String doUploadFile(InputStream inputStream, String fileKey) {
         log.info("oss client doUploadFile fileKey:{}", fileKey);
-        try (inputStream) {
+        try {
             ossClient.putObject(aliYunOssConfig.getBucketName(), fileKey, inputStream);
-            return String.join("/", getAccessibleDomain(), fileKey);
-        } catch (ClientException | IOException | OSSException e) {
+            return getAccessibleDomain().replaceAll("/+$", "") + "/" + fileKey;
+        } catch (ClientException | OSSException e) {
             log.error("uploadFile oss error: ", e);
             throw FileUploadException.uploadFail("阿里云OSS文件上传异常");
         }
