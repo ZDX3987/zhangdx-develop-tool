@@ -1,6 +1,5 @@
 package cn.zhangdx.fileupload;
 
-import cn.zhangdx.fileupload.server.oss.AliYunOssConfig;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
@@ -20,7 +19,7 @@ public class FileUploadServerProperties {
 
     private Vendor vendor = Vendor.AliYun;
 
-    private AliYunOssConfig aliyun = new AliYunOssConfig();
+    private AliYunOssProperties aliyun = new AliYunOssProperties();
 
     private boolean rename;
 
@@ -33,7 +32,17 @@ public class FileUploadServerProperties {
     /**
      * 图片文件配置
      */
+    @Data
     public static class ImageConfig {
         private boolean onlyWebp;
+    }
+
+    @Data
+    static class AliYunOssProperties {
+        private String endpoint;
+        private String bucketName;
+        private String accessKeyId;
+        private String accessKeySecret;
+        private String proxyDomain;
     }
 }

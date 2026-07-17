@@ -1,5 +1,6 @@
 package cn.zhangdx.fileupload.server.oss;
 
+import lombok.Builder;
 import lombok.Data;
 
 /**
@@ -8,6 +9,7 @@ import lombok.Data;
  * @date 2026/7/17 22:30
  */
 @Data
+@Builder
 public class AliYunOssConfig {
     private String endpoint;
     private String bucketName;

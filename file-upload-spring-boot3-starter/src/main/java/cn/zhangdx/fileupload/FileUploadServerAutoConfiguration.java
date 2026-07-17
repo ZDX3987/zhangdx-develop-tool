@@ -56,7 +56,11 @@ public class FileUploadServerAutoConfiguration {
 
         @Bean
         public FileUploadServer aliYunOssFileUploadServer(FileUploadServerProperties fileUploadServerProperties, FileUploadProcessorChain fileUploadProcessorChain) {
-            AliYunOssConfig aliYunOssConfig = fileUploadServerProperties.getAliyun();
+            FileUploadServerProperties.AliYunOssProperties aliYunOssProperties = fileUploadServerProperties.getAliyun();
+            AliYunOssConfig aliYunOssConfig = AliYunOssConfig.builder().endpoint(aliYunOssProperties.getEndpoint())
+                    .bucketName(aliYunOssProperties.getBucketName()).accessKeyId(aliYunOssProperties.getAccessKeyId())
+                    .accessKeySecret(aliYunOssProperties.getAccessKeySecret())
+                    .proxyDomain(aliYunOssProperties.getProxyDomain()).build();
             return new AliYunOssFileUploadServer(aliYunOssConfig, fileUploadProcessorChain);
         }
     }
