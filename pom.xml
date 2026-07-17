@@ -13,6 +13,8 @@
     <module>common-support</module>
     <module>search-engine-core</module>
     <module>search-engine-spring-boot3-starter</module>
+      <module>file-upload-server</module>
+    <module>file-upload-spring-boot3-starter</module>
   </modules>
 
   <properties>
@@ -21,10 +23,17 @@
     <maven.compiler.target>17</maven.compiler.target>
     <maven.compiler.release>17</maven.compiler.release>
     <spring-boot.version>3.2.12</spring-boot.version>
+    <spring.version>6.1.15</spring.version>
+    <oss.version>3.18.3</oss.version>
   </properties>
 
   <dependencyManagement>
     <dependencies>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-web</artifactId>
+        <version>${spring.version}</version>
+      </dependency>
       <!-- Spring Boot 自动配置核心 -->
       <dependency>
         <groupId>org.springframework.boot</groupId>
@@ -65,6 +74,11 @@
         <artifactId>fastjson</artifactId>
         <version>1.2.83</version>
       </dependency>
+      <dependency>
+        <groupId>com.aliyun.oss</groupId>
+        <artifactId>aliyun-sdk-oss</artifactId>
+        <version>${oss.version}</version>
+      </dependency>
 
       <dependency>
         <groupId>cn.zhangdx</groupId>
@@ -75,6 +89,11 @@
         <groupId>cn.zhangdx</groupId>
         <artifactId>search-engine-core</artifactId>
         <version>1.0.1-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>cn.zhangdx</groupId>
+        <artifactId>file-upload-server</artifactId>
+        <version>1.0-SNAPSHOT</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
