@@ -16,7 +16,9 @@ public class FileUploadProcessorChain {
 
 
     public void doProcess(FileUploadRequest fileUploadRequest) {
-        firstProcessor.process(fileUploadRequest);
+        if (firstProcessor != null) {
+            firstProcessor.process(fileUploadRequest);
+        }
     }
 
     public void addProcessor(FileUploadProcessor processor) {

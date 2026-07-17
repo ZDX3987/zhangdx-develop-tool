@@ -7,7 +7,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayInputStream;
 import java.util.HashSet;
-import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -39,24 +38,14 @@ public class ImageFileUploadProcessor extends AbstractFileUploadProcessor {
     public void process(FileUploadRequest fileUploadRequest) {
         MultipartFile file = fileUploadRequest.getFile();
         String fileName = fileUploadRequest.getFileName();
-        String suffix = subLowerCaseExtensionName(fileName);
+        String suffix = FileUtil.subLowerCaseExtensionName(fileName);
         if (!IMAGE_FILE_CONVERT_EXTENSIONS.equals(suffix) && SUPPORT_IMAGE_FILE_EXTENSIONS.contains(suffix)) {
-            fileUploadRequest.setFileName(fileName.replace(suffix, IMAGE_FILE_CONVERT_EXTENSIONS));
+            fileUploadRequest.setFileName(FileUtil.generateImgFileName());
             log.info("convert image to webp file, fileName: {}", fileUploadRequest.getFileName());
             byte[] bytes = FileUtil.convertToWebImage(file);
             ByteArrayInputStream inputStream = new ByteArrayInputStream(bytes);
             fileUploadRequest.setFileInputStream(inputStream);
         }
         super.nextProcess(fileUploadRequest);
-    }
-
-    /**
-     * 获取文件名中的扩展名
-     * @param originalFilename 原始文件名
-     * @return 扩展名
-     */
-    private String subLowerCaseExtensionName(String originalFilename) {
-        return Optional.ofNullable(originalFilename).map(name -> name.substring(name.lastIndexOf(".") + 1))
-                .orElse("").toLowerCase();
     }
 }
