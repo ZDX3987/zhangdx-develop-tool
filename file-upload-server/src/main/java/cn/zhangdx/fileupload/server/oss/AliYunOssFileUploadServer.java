@@ -37,7 +37,7 @@ public class AliYunOssFileUploadServer extends AbstractFileUploadServer implemen
         log.info("oss client doUploadFile fileKey:{}", fileKey);
         try {
             ossClient.putObject(aliYunOssConfig.getBucketName(), fileKey, inputStream);
-            return getAccessibleDomain().replaceAll("/+$", "") + "/" + fileKey;
+            return fileKey;
         } catch (ClientException | OSSException e) {
             log.error("uploadFile oss error: ", e);
             throw FileUploadException.uploadFail("阿里云OSS文件上传异常");

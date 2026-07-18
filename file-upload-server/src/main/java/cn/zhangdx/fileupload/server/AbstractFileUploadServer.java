@@ -65,8 +65,9 @@ public abstract class AbstractFileUploadServer implements FileUploadServer {
             filePathList.add(fileUploadRequest.getFileName());
             String fullFilePath = String.join("/", filePathList);
             InputStream inputStream = fileUploadRequest.openFileInputStream();
-            String accessibleUrl = doUploadFile(inputStream, fullFilePath);
-            return new FileUploadResult(fullFilePath, accessibleUrl);
+            String fileKey = doUploadFile(inputStream, fullFilePath);
+            String accessibleUrl = getAccessibleDomain().replaceAll("/+$", "") + "/" + fileKey;
+            return new FileUploadResult(fileKey, accessibleUrl);
         } catch (IOException e) {
             throw FileUploadException.uploadFail(e.getMessage());
         }
@@ -99,7 +100,7 @@ public abstract class AbstractFileUploadServer implements FileUploadServer {
      * 具体服务器实现的上传方法
      * @param inputStream 文件流
      * @param fileKey 文件唯一key（通常是唯一路径和文件名的拼接）
-     * @return 返回文件可访问路径
+     * @return 返回文件上传后的唯一Key，不保证可访问性
      * @throws FileUploadException 文件上传异常
      */
     protected abstract String doUploadFile(InputStream inputStream, String fileKey) throws FileUploadException;
