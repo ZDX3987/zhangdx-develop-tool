@@ -15,7 +15,7 @@ public class FileUploadServerProperties {
     /**
      * 是佛开启使用文件上传
      */
-    private boolean enabled = true;
+    private boolean enabled;
 
     private Vendor vendor = Vendor.AliYun;
 
