@@ -13,6 +13,9 @@ import com.aliyun.oss.model.DeleteDirectoryRequest;
 import com.aliyun.oss.model.DeleteDirectoryResult;
 import com.aliyun.oss.model.DeleteObjectsRequest;
 import com.aliyun.oss.model.DeleteObjectsResult;
+import com.aliyun.oss.model.ListObjectsRequest;
+import com.aliyun.oss.model.OSSObjectSummary;
+import com.aliyun.oss.model.ObjectListing;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
@@ -21,6 +24,7 @@ import org.springframework.util.StringUtils;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -131,13 +135,19 @@ public class AliYunOssFileUploadServer extends AbstractFileUploadServer implemen
         if (!StringUtils.hasText(directory)) {
             throw FileUploadException.uploadFail("文件目录不能为空");
         }
-        DeleteDirectoryRequest deleteDirectoryRequest = new DeleteDirectoryRequest(aliYunOssConfig.getBucketName(), directory);
-        deleteDirectoryRequest.setDeleteRecursive(forceDelete);
+        String bucketName = aliYunOssConfig.getBucketName();
+        ListObjectsRequest listObjectsRequest = new ListObjectsRequest(bucketName).withPrefix(directory);
+        ObjectListing objectListResult = ossClient.listObjects(listObjectsRequest);
+        List<String> keyList = objectListResult.getObjectSummaries().stream().map(OSSObjectSummary::getKey).toList();
+        if (keyList.isEmpty()) {
+            return false;
+        }
+        DeleteObjectsRequest deleteObjectsRequest = new DeleteObjectsRequest(bucketName).withKeys(keyList);
         try {
-            DeleteDirectoryResult deleteDirectoryResult = ossClient.deleteDirectory(deleteDirectoryRequest);
-            return deleteDirectoryResult.getDeleteNumber() > 0;
+            DeleteObjectsResult deleteObjectsResult = ossClient.deleteObjects(deleteObjectsRequest);
+            return !deleteObjectsResult.getDeletedObjects().isEmpty();
         } catch (OSSException | ClientException e) {
-            log.error("deleteFileByDirectory oss error: ", e);
+            log.error("deleteDirectory oss error: ", e);
             throw FileUploadException.uploadFail("文件删除失败");
         }
     }

@@ -9,7 +9,7 @@
 
     <artifactId>file-upload-server</artifactId>
     <packaging>jar</packaging>
-
+    <version>1.0.1-SNAPSHOT</version>
     <name>file-upload-server</name>
     <url>http://maven.apache.org</url>
 
