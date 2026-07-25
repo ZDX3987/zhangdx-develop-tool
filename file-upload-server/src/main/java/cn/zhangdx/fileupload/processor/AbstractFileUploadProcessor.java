@@ -1,7 +1,5 @@
 package cn.zhangdx.fileupload.processor;
 
-import cn.zhangdx.fileupload.request.FileUploadRequest;
-
 /**
  * 文件上传处理器抽象类
  * @author zhangdx
