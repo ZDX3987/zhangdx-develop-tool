@@ -9,8 +9,6 @@ import com.aliyun.oss.OSS;
 import com.aliyun.oss.OSSClientBuilder;
 import com.aliyun.oss.OSSException;
 import com.aliyun.oss.common.comm.Protocol;
-import com.aliyun.oss.model.DeleteDirectoryRequest;
-import com.aliyun.oss.model.DeleteDirectoryResult;
 import com.aliyun.oss.model.DeleteObjectsRequest;
 import com.aliyun.oss.model.DeleteObjectsResult;
 import com.aliyun.oss.model.ListObjectsRequest;

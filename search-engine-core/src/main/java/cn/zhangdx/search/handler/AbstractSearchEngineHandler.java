@@ -14,7 +14,7 @@ import java.util.List;
  */
 public abstract class AbstractSearchEngineHandler implements SearchEngineHandler {
 
-    private SearchEngineConverterManager searchEngineConverterManager;
+    private final SearchEngineConverterManager searchEngineConverterManager;
 
     public AbstractSearchEngineHandler(SearchEngineConverterManager searchEngineConverterManager) {
         this.searchEngineConverterManager = searchEngineConverterManager;
