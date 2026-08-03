@@ -4,6 +4,7 @@ import cn.zhangdx.fileupload.exception.FileUploadException;
 import com.luciad.imageio.webp.WebPWriteParam;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.IIOImage;
@@ -49,6 +50,20 @@ public class FileUtil {
             log.error("convertToWebImage error: ", e);
             throw FileUploadException.uploadFail("图片转换为Webp类型失败");
         }
+    }
+
+    /**
+     * 获取文件的可访问URL，包含了域名和文件全路径。
+     *
+     * @param fileName 文件名
+     * @param path     多级文件夹名
+     * @return 件的可访问地址，例如: https://file.zhangdx.cn/folder/IMG_20991201123018.jpg
+     */
+    public static String getAccessibleUrl(String fileName, String... path) {
+        if (!StringUtils.hasText(fileName)) {
+            throw FileUploadException.uploadFail("文件名不合法");
+        }
+        return fileName.startsWith("http") ? fileName : String.join("/", path) + "/" + fileName;
     }
 
     /**
