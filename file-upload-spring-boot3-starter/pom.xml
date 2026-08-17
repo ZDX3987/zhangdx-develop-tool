@@ -9,6 +9,7 @@
 
     <artifactId>file-upload-spring-boot3-starter</artifactId>
     <packaging>jar</packaging>
+    <version>1.0-RELEASE</version>
 
     <name>file-upload-spring-boot3-starter</name>
     <url>http://maven.apache.org</url>

@@ -4,12 +4,12 @@
     <parent>
         <groupId>cn.zhangdx</groupId>
         <artifactId>zhangdx-develop-tool</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <version>1.0-RELEASE</version>
     </parent>
 
     <artifactId>search-engine-spring-boot3-starter</artifactId>
     <packaging>jar</packaging>
-    <version>1.0.1-SNAPSHOT</version>
+    <version>1.0.1-RELEASE</version>
     <name>search-engine-spring-boot3-starter</name>
     <url>http://maven.apache.org</url>
 
