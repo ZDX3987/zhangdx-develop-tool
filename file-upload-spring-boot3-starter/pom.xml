@@ -4,17 +4,19 @@
     <parent>
         <groupId>cn.zhangdx</groupId>
         <artifactId>zhangdx-develop-tool</artifactId>
-        <version>1.0-RELEASE</version>
+        <version>1.1.0</version>
     </parent>
 
     <artifactId>file-upload-spring-boot3-starter</artifactId>
     <packaging>jar</packaging>
+    <version>1.0-RELEASE</version>
 
     <name>file-upload-spring-boot3-starter</name>
     <url>http://maven.apache.org</url>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <file-upload-server.version>1.0.1-RELEASE</file-upload-server.version>
     </properties>
 
     <dependencies>
@@ -33,6 +35,7 @@
         <dependency>
             <groupId>cn.zhangdx</groupId>
             <artifactId>file-upload-server</artifactId>
+            <version>${file-upload-server.version}</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>

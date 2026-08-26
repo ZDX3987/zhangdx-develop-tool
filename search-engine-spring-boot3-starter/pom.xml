@@ -4,7 +4,7 @@
     <parent>
         <groupId>cn.zhangdx</groupId>
         <artifactId>zhangdx-develop-tool</artifactId>
-        <version>1.0-RELEASE</version>
+        <version>1.1.0</version>
     </parent>
 
     <artifactId>search-engine-spring-boot3-starter</artifactId>
@@ -33,6 +33,7 @@
         <dependency>
             <groupId>cn.zhangdx</groupId>
             <artifactId>search-engine-core</artifactId>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>

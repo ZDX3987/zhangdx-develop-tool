@@ -4,7 +4,7 @@
     <parent>
         <groupId>cn.zhangdx</groupId>
         <artifactId>zhangdx-develop-tool</artifactId>
-        <version>1.0-RELEASE</version>
+        <version>1.1.0</version>
     </parent>
 
     <artifactId>search-engine-core</artifactId>
@@ -15,6 +15,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <common-support.version>1.0-RELEASE</common-support.version>
     </properties>
 
     <dependencies>
@@ -35,6 +36,7 @@
         <dependency>
             <groupId>cn.zhangdx</groupId>
             <artifactId>common-support</artifactId>
+            <version>${common-support.version}</version>
         </dependency>
         <dependency>
             <groupId>com.alibaba</groupId>
