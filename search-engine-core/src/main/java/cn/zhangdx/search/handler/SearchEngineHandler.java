@@ -1,5 +1,6 @@
 package cn.zhangdx.search.handler;
 
+import cn.zhangdx.search.exception.SearchEngineServerException;
 import cn.zhangdx.search.query.SearchEngineQuery;
 import cn.zhangdx.search.query.SearchEngineSaveRequest;
 import cn.zhangdx.support.pagination.ResultPage;
@@ -46,4 +47,22 @@ public interface SearchEngineHandler {
      * @param saveRequest 保存参数
      */
     <E> void batchSaveDocument(Collection<E> documents, SearchEngineSaveRequest<E> saveRequest);
+
+    /**
+     * 删除单个文档
+     *
+     * @param documentItem 文档内容
+     * @param <E>          文档数据类型
+     * @throws SearchEngineServerException 搜索引擎服务端异常
+     */
+    <E> void deleteDocument(E documentItem) throws SearchEngineServerException;
+
+    /**
+     * 删除指定索引下的文档
+     *
+     * @param indexName  索引名称
+     * @param primaryKey 主键key
+     * @throws SearchEngineServerException 搜索引擎服务端异常
+     */
+    void deleteDocument(String indexName, String primaryKey) throws SearchEngineServerException;
 }

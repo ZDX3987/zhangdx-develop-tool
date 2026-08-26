@@ -1,5 +1,6 @@
 package cn.zhangdx.search.query;
 
+import cn.zhangdx.search.exception.SearchEngineRequestException;
 import cn.zhangdx.search.utils.SearchAnnotationUtil;
 import lombok.Getter;
 
@@ -13,17 +14,14 @@ public class SearchEngineSaveRequest<E> {
 
     private Class<E> documentType;
 
-    private String indexName;
-
-    private String primaryKey;
+    private SearchDocumentTypeMetadata documentTypeMetadata;
 
     private Boolean refresh;
 
 
-    public SearchEngineSaveRequest(Class<E> documentType, boolean refresh) {
+    public SearchEngineSaveRequest(Class<E> documentType, boolean refresh) throws SearchEngineRequestException {
         this.documentType = documentType;
-        this.indexName = SearchAnnotationUtil.parseIndexName(documentType);
-        this.primaryKey = SearchAnnotationUtil.parsePrimaryKeyFromField(documentType);
+        this.documentTypeMetadata = SearchAnnotationUtil.parseDocumentTypeMetadata(documentType);
         this.refresh = refresh;
     }
 

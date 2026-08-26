@@ -1,7 +1,10 @@
 package cn.zhangdx.search.handler;
 
 import cn.zhangdx.search.converter.SearchEngineConverterManager;
+import cn.zhangdx.search.exception.SearchEngineServerException;
+import cn.zhangdx.search.query.SearchDocumentTypeMetadata;
 import cn.zhangdx.search.query.SearchEngineQuery;
+import cn.zhangdx.search.utils.SearchAnnotationUtil;
 import cn.zhangdx.support.pagination.PageQuery;
 import cn.zhangdx.support.pagination.ResultPage;
 
@@ -44,6 +47,18 @@ public abstract class AbstractSearchEngineHandler implements SearchEngineHandler
         List<?> records = this.searchDocument(searchEngineQuery);
         page.setRecords(this.applyConverter(records));
         return page;
+    }
+
+    /**
+     * 删除单个文档
+     *
+     * @param documentItem 文档内容
+     * @throws SearchEngineServerException 搜索引擎服务端异常
+     */
+    @Override
+    public <E> void deleteDocument(E documentItem) throws SearchEngineServerException {
+        SearchDocumentTypeMetadata documentTypeMetadata = SearchAnnotationUtil.parseDocumentTypeMetadata(documentItem.getClass());
+        deleteDocument(documentTypeMetadata.indexName(), documentTypeMetadata.primaryKeyFieldName());
     }
 
     protected abstract <E> List<E> doSearchDocument(SearchEngineQuery searchEngineQuery);

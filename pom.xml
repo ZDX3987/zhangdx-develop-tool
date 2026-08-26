@@ -95,7 +95,7 @@
             <dependency>
                 <groupId>cn.zhangdx</groupId>
                 <artifactId>search-engine-core</artifactId>
-                <version>1.0.1-RELEASE</version>
+                <version>1.0.2-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>cn.zhangdx</groupId>
