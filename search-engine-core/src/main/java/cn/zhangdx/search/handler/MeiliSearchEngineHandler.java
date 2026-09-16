@@ -1,6 +1,8 @@
 package cn.zhangdx.search.handler;
 
 import cn.zhangdx.search.converter.SearchEngineConverterManager;
+import cn.zhangdx.search.enumration.EngineType;
+import cn.zhangdx.search.exception.SearchEngineException;
 import cn.zhangdx.search.query.SearchEngineQuery;
 import cn.zhangdx.search.query.SearchEngineSaveRequest;
 import cn.zhangdx.support.pagination.PageQuery;
@@ -11,6 +13,7 @@ import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.meilisearch.sdk.Client;
 import com.meilisearch.sdk.Index;
 import com.meilisearch.sdk.SearchRequest;
+import com.meilisearch.sdk.exceptions.MeilisearchException;
 import com.meilisearch.sdk.model.SearchResultPaginated;
 import com.meilisearch.sdk.model.Searchable;
 
@@ -88,10 +91,31 @@ public class MeiliSearchEngineHandler extends AbstractSearchEngineHandler {
 
     @Override
     protected <E> List<E> doSearchDocument(SearchEngineQuery searchEngineQuery) {
-        Index index = client.index(searchEngineQuery.getDocumentIndex());
         SearchRequest searchRequest = this.genSearchRequest(searchEngineQuery);
-        Searchable searchable = index.search(searchRequest);
-        return JSONArray.parseArray(JSONObject.toJSONString(searchable.getHits()), searchEngineQuery.getSupportType());
+        try {
+            Index index = client.index(searchEngineQuery.getDocumentIndex());
+            Searchable searchable = index.search(searchRequest);
+            return JSONArray.parseArray(JSONObject.toJSONString(searchable.getHits()), searchEngineQuery.getSupportType());
+        } catch (MeilisearchException e) {
+            throw new SearchEngineException(EngineType.MEILI_SEARCH, "搜索文档异常", e);
+        }
+
+    }
+
+    /**
+     * 具体删除文档对象方法
+     *
+     * @param indexName  文档所属的索引
+     * @param primaryKey 删除的文档主键
+     */
+    @Override
+    protected void doDeleteDocument(String indexName, String primaryKey) throws SearchEngineException {
+        try {
+            Index index = client.index(indexName);
+            index.deleteDocument(primaryKey);
+        } catch (MeilisearchException e) {
+            throw new SearchEngineException(EngineType.MEILI_SEARCH, "删除文档异常", e);
+        }
     }
 
     private SearchRequest genSearchRequest(SearchEngineQuery searchEngineQuery) {

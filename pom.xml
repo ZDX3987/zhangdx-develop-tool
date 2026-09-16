@@ -4,7 +4,7 @@
 
   <groupId>cn.zhangdx</groupId>
   <artifactId>zhangdx-develop-tool</artifactId>
-  <version>1.0-SNAPSHOT</version>
+  <version>1.0.1-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>zhangdx-develop-tool</name>
@@ -13,7 +13,7 @@
     <module>common-support</module>
     <module>search-engine-core</module>
     <module>search-engine-spring-boot3-starter</module>
-      <module>file-upload-server</module>
+    <module>file-upload-server</module>
     <module>file-upload-spring-boot3-starter</module>
   </modules>
 
@@ -89,7 +89,7 @@
       <dependency>
         <groupId>cn.zhangdx</groupId>
         <artifactId>common-support</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <version>1.0.1-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>cn.zhangdx</groupId>

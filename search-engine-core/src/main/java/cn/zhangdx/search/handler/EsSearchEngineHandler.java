@@ -1,6 +1,8 @@
 package cn.zhangdx.search.handler;
 
 import cn.zhangdx.search.converter.SearchEngineConverterManager;
+import cn.zhangdx.search.enumration.EngineType;
+import cn.zhangdx.search.exception.SearchEngineException;
 import cn.zhangdx.search.query.SearchEngineQuery;
 import cn.zhangdx.search.query.SearchEngineSaveRequest;
 import cn.zhangdx.support.pagination.PageQuery;
@@ -37,6 +39,21 @@ public class EsSearchEngineHandler extends AbstractSearchEngineHandler {
         NativeQueryBuilder queryBuilder = buildNativeQuery(searchEngineQuery);
         SearchHits<E> searchHits = elasticsearchOperations.search(queryBuilder.build(), searchEngineQuery.getSupportType());
         return searchHits.getSearchHits().stream().map(SearchHit::getContent).toList();
+    }
+
+    /**
+     * 具体删除文档对象方法
+     *
+     * @param indexName  文档所属的索引
+     * @param primaryKey 删除的文档主键
+     */
+    @Override
+    protected void doDeleteDocument(String indexName, String primaryKey) throws SearchEngineException {
+        try {
+            elasticsearchOperations.delete(primaryKey, IndexCoordinates.of(indexName));
+        } catch (Exception e) {
+            throw new SearchEngineException(EngineType.ELASTICSEARCH, "删除文档异常", e);
+        }
     }
 
     /**

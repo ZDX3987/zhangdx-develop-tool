@@ -18,7 +18,7 @@ public class SearchAnnotationUtil {
     public static String parseIndexName(Class<?> documentType) {
         SearchDocument searchDocumentAnnotation = documentType.getAnnotation(SearchDocument.class);
         if (searchDocumentAnnotation == null) {
-            throw new IllegalArgumentException("search document type " + documentType.getName() +" must have @SearchDocument annotation");
+            throw new IllegalArgumentException("document type " + documentType.getName() +" must have @SearchDocument annotation");
         }
         return searchDocumentAnnotation.indexName();
     }
@@ -33,7 +33,7 @@ public class SearchAnnotationUtil {
             primaryKey = declaredField.getName();
         }
         if (primaryKey == null) {
-            throw new IllegalArgumentException("search document type " + documentType.getName() +" must have @SearchPrimaryKey annotation");
+            throw new IllegalArgumentException("document type " + documentType.getName() +" must have @SearchPrimaryKey annotation");
         }
         return primaryKey;
     }

@@ -1,9 +1,12 @@
 package cn.zhangdx.search.handler;
 
 import cn.zhangdx.search.converter.SearchEngineConverterManager;
+import cn.zhangdx.search.exception.SearchEngineException;
+import cn.zhangdx.search.query.SearchEngineDeleteRequest;
 import cn.zhangdx.search.query.SearchEngineQuery;
 import cn.zhangdx.support.pagination.PageQuery;
 import cn.zhangdx.support.pagination.ResultPage;
+import cn.zhangdx.support.util.StringUtil;
 
 import java.util.List;
 
@@ -14,7 +17,7 @@ import java.util.List;
  */
 public abstract class AbstractSearchEngineHandler implements SearchEngineHandler {
 
-    private SearchEngineConverterManager searchEngineConverterManager;
+    private final SearchEngineConverterManager searchEngineConverterManager;
 
     public AbstractSearchEngineHandler(SearchEngineConverterManager searchEngineConverterManager) {
         this.searchEngineConverterManager = searchEngineConverterManager;
@@ -28,7 +31,8 @@ public abstract class AbstractSearchEngineHandler implements SearchEngineHandler
      */
     @Override
     public <E> List<E> searchDocument(SearchEngineQuery searchEngineQuery) {
-        return this.doSearchDocument(searchEngineQuery);
+        List<E> document = this.doSearchDocument(searchEngineQuery);
+        return this.applyConverter(document);
     }
 
     /**
@@ -46,10 +50,32 @@ public abstract class AbstractSearchEngineHandler implements SearchEngineHandler
         return page;
     }
 
+    /**
+     * 删除某个文档
+     *
+     * @param deleteRequest 删除文档参数
+     */
+    @Override
+    public void deleteDocument(SearchEngineDeleteRequest deleteRequest) {
+        String indexName = deleteRequest.indexName();
+        String primaryKey = deleteRequest.primaryKey();
+        if (StringUtil.isEmpty(indexName) || StringUtil.isEmpty(primaryKey)) {
+            throw new IllegalArgumentException("删除参数不能为空");
+        }
+        doDeleteDocument(indexName, primaryKey);
+    }
+
     protected abstract <E> List<E> doSearchDocument(SearchEngineQuery searchEngineQuery);
 
     protected <E> List<E> applyConverter(List<?> records) {
         return searchEngineConverterManager.batchConvert(records);
     }
+
+    /**
+     * 具体删除文档对象方法
+     * @param indexName 文档所属的索引
+     * @param primaryKey 删除的文档主键
+     */
+    protected abstract void doDeleteDocument(String indexName, String primaryKey) throws SearchEngineException;
 
 }

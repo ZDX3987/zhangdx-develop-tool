@@ -1,5 +1,6 @@
 package cn.zhangdx.search.handler;
 
+import cn.zhangdx.search.query.SearchEngineDeleteRequest;
 import cn.zhangdx.search.query.SearchEngineQuery;
 import cn.zhangdx.search.query.SearchEngineSaveRequest;
 import cn.zhangdx.support.pagination.ResultPage;
@@ -46,4 +47,10 @@ public interface SearchEngineHandler {
      * @param saveRequest 保存参数
      */
     <E> void batchSaveDocument(Collection<E> documents, SearchEngineSaveRequest<E> saveRequest);
+
+    /**
+     * 删除某个文档
+     * @param deleteRequest 删除文档参数
+     */
+    void deleteDocument(SearchEngineDeleteRequest deleteRequest);
 }

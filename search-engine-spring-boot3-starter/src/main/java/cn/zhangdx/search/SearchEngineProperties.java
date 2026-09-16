@@ -1,5 +1,6 @@
 package cn.zhangdx.search;
 
+import cn.zhangdx.search.enumration.EngineType;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
@@ -27,19 +28,6 @@ public class SearchEngineProperties {
      * MeiliSearch 配置。
      */
     private Meili meili = new Meili();
-
-    public enum EngineType {
-
-        /**
-         * 使用 MeiliSearch 作为搜索引擎。
-         */
-        MEILI_SEARCH,
-
-        /**
-         * 使用 Elasticsearch 作为搜索引擎。
-         */
-        ELASTICSEARCH
-    }
 
     @Data
     public static class Meili {
