@@ -16,6 +16,7 @@
         <module>search-engine-spring-boot3-starter</module>
         <module>file-upload-server</module>
         <module>file-upload-spring-boot3-starter</module>
+        <module>distributed-core</module>
     </modules>
 
     <properties>
@@ -31,9 +32,15 @@
 
     <dependencyManagement>
         <dependencies>
+            <!--Spring依赖-->
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-web</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-aop</artifactId>
                 <version>${spring.version}</version>
             </dependency>
             <!-- Spring Boot 自动配置核心 -->
@@ -85,6 +92,11 @@
                 <groupId>io.github.darkxanter</groupId>
                 <artifactId>webp-imageio</artifactId>
                 <version>${webp-imageio.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.aspectj</groupId>
+                <artifactId>aspectjweaver</artifactId>
+                <version>1.9.22.1</version>
             </dependency>
 
             <dependency>
