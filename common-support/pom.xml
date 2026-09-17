@@ -4,7 +4,7 @@
     <parent>
         <groupId>cn.zhangdx</groupId>
         <artifactId>zhangdx-develop-tool</artifactId>
-        <version>1.0-RELEASE</version>
+        <version>1.0.1-SNAPSHOT</version>
     </parent>
 
     <artifactId>common-support</artifactId>
