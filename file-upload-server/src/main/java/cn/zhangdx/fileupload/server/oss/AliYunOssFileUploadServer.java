@@ -11,6 +11,7 @@ import com.aliyun.oss.OSSException;
 import com.aliyun.oss.common.comm.Protocol;
 import com.aliyun.oss.model.DeleteObjectsRequest;
 import com.aliyun.oss.model.DeleteObjectsResult;
+import com.aliyun.oss.model.GenericRequest;
 import com.aliyun.oss.model.ListObjectsRequest;
 import com.aliyun.oss.model.OSSObjectSummary;
 import com.aliyun.oss.model.ObjectListing;
@@ -87,7 +88,8 @@ public class AliYunOssFileUploadServer extends AbstractFileUploadServer implemen
     @Override
     public boolean deleteFile(String fileKey) throws FileUploadException {
         log.info("deleteFile fileKey: {}", fileKey);
-        DeleteObjectsRequest deleteObjectsRequest = new DeleteObjectsRequest(aliYunOssConfig.getBucketName());
+        GenericRequest deleteObjectsRequest = new DeleteObjectsRequest(aliYunOssConfig.getBucketName())
+                .withKey(fileKey);
         try {
             ossClient.deleteObject(deleteObjectsRequest);
             return true;

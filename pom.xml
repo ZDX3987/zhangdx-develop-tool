@@ -100,7 +100,7 @@
             <dependency>
                 <groupId>cn.zhangdx</groupId>
                 <artifactId>file-upload-server</artifactId>
-                <version>1.0.1-RELEASE</version>
+                <version>1.0.2</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
