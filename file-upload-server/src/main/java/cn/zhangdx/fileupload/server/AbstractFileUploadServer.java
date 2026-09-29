@@ -67,7 +67,7 @@ public abstract class AbstractFileUploadServer implements FileUploadServer {
             InputStream inputStream = fileUploadRequest.openFileInputStream();
             String fileKey = doUploadFile(inputStream, fullFilePath);
             String accessibleUrl = getAccessibleDomain().replaceAll("/+$", "") + "/" + fileKey;
-            return new FileUploadResult(fileKey, accessibleUrl);
+            return new FileUploadResult(fileUploadRequest.getFileName(), fileKey, accessibleUrl);
         } catch (IOException e) {
             throw FileUploadException.uploadFail(e.getMessage());
         }

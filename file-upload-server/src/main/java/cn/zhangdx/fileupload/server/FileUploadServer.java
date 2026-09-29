@@ -13,7 +13,7 @@ import java.util.List;
  * @author zhangdx
  * @date 2026/5/14 12:47
  */
-public interface FileUploadServer {
+public interface FileUploadServer extends FileDelete {
 
     /**
      * 文件上传
@@ -36,7 +36,7 @@ public interface FileUploadServer {
      * 上传文件并返回结构化结果。默认实现用于兼容已有 FileUploadServer 实现，建议实现类覆盖以提供 fileKey。
      */
     default FileUploadResult uploadFileWithResult(FileUploadRequest fileUploadRequest) throws FileUploadException {
-        return new FileUploadResult(null, uploadFile(fileUploadRequest));
+        return new FileUploadResult(fileUploadRequest.getFileName(), null, uploadFile(fileUploadRequest));
     }
 
     default FileUploadResult uploadFileWithResult(MultipartFile file) throws FileUploadException {
