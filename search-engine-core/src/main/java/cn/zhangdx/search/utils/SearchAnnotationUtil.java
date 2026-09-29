@@ -38,18 +38,8 @@ public class SearchAnnotationUtil {
      * @throws SearchEngineRequestException 当解析异常或没有定义主键属性时抛出该异常
      */
     public static String parsePrimaryKeyFromField(Class<?> documentType) throws SearchEngineRequestException {
-        String primaryKey = null;
-        for (Field declaredField : documentType.getDeclaredFields()) {
-            SearchPrimaryKey searchPrimaryKeyAnnotation = declaredField.getAnnotation(SearchPrimaryKey.class);
-            if (searchPrimaryKeyAnnotation == null) {
-                continue;
-            }
-            primaryKey = declaredField.getName();
-        }
-        if (primaryKey == null) {
-            throw new SearchEngineRequestException("Search document type " + documentType.getName() +" must has field with @SearchPrimaryKey annotation");
-        }
-        return primaryKey;
+        Field field = doGetPrimaryKeyField(documentType);
+        return field.getName();
     }
 
     /**
@@ -77,6 +67,37 @@ public class SearchAnnotationUtil {
             highlightFields.add(declaredField.getName());
         }
         return highlightFields.toArray(new String[0]);
+    }
+
+    /**
+     * 通过反射获取给定对象的指定主键值
+     * @param sourceObject 指定对象
+     * @return 返回主键值
+     * @param <E> 对象类型
+     */
+    public static <E> String parsePrimaryKeyValue(E sourceObject) {
+        Field primaryKeyField = doGetPrimaryKeyField(sourceObject.getClass());
+        try {
+            primaryKeyField.setAccessible(true);
+            return String.valueOf(primaryKeyField.get(sourceObject));
+        } catch (IllegalAccessException e) {
+            throw new SearchEngineRequestException("Reflect get primary field value of " + primaryKeyField.getName() + " error");
+        }
+    }
+
+    private static Field doGetPrimaryKeyField(Class<?> documentType) {
+        Field field = null;
+        for (Field declaredField : documentType.getDeclaredFields()) {
+            SearchPrimaryKey searchPrimaryKeyAnnotation = declaredField.getAnnotation(SearchPrimaryKey.class);
+            if (searchPrimaryKeyAnnotation != null) {
+                field = declaredField;
+                break;
+            }
+        }
+        if (field == null) {
+            throw new SearchEngineRequestException("Search document type " + documentType.getName() +" must has field with @SearchPrimaryKey annotation");
+        }
+        return field;
     }
 
 }

@@ -58,7 +58,7 @@ public abstract class AbstractSearchEngineHandler implements SearchEngineHandler
     @Override
     public <E> void deleteDocument(E documentItem) throws SearchEngineServerException {
         SearchDocumentTypeMetadata documentTypeMetadata = SearchAnnotationUtil.parseDocumentTypeMetadata(documentItem.getClass());
-        deleteDocument(documentTypeMetadata.indexName(), documentTypeMetadata.primaryKeyFieldName());
+        deleteDocument(documentTypeMetadata.indexName(), SearchAnnotationUtil.parsePrimaryKeyValue(documentItem));
     }
 
     protected abstract <E> List<E> doSearchDocument(SearchEngineQuery searchEngineQuery);
