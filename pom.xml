@@ -87,6 +87,21 @@
                 <version>${webp-imageio.version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>cn.zhangdx</groupId>
+                <artifactId>common-support</artifactId>
+                <version>1.0-RELEASE</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.zhangdx</groupId>
+                <artifactId>search-engine-core</artifactId>
+                <version>1.0.1-RELEASE</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.zhangdx</groupId>
+                <artifactId>file-upload-server</artifactId>
+                <version>1.0.2</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 </project>
