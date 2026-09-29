@@ -86,7 +86,7 @@
                 <artifactId>webp-imageio</artifactId>
                 <version>${webp-imageio.version}</version>
             </dependency>
-
+            <!--内部module依赖-->
             <dependency>
                 <groupId>cn.zhangdx</groupId>
                 <artifactId>common-support</artifactId>

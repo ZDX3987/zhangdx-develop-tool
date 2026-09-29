@@ -11,12 +11,6 @@
     <packaging>jar</packaging>
     <name>search-engine-core</name>
     <url>http://maven.apache.org</url>
-    <version>1.0.2</version>
-
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <common-support.version>1.0-RELEASE</common-support.version>
-    </properties>
 
     <dependencies>
         <dependency>
@@ -36,7 +30,6 @@
         <dependency>
             <groupId>cn.zhangdx</groupId>
             <artifactId>common-support</artifactId>
-            <version>${common-support.version}</version>
         </dependency>
         <dependency>
             <groupId>com.alibaba</groupId>

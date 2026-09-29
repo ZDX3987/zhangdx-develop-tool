@@ -9,14 +9,9 @@
 
     <artifactId>common-support</artifactId>
     <packaging>jar</packaging>
-    <version>1.0.2</version>
 
     <name>common-support</name>
     <url>http://maven.apache.org</url>
-
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
 
     <dependencies>
         <dependency>
