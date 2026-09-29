@@ -11,16 +11,18 @@
     <packaging>jar</packaging>
 
     <name>common-support</name>
-    <url>http://maven.apache.org</url>
+    <description>Common API responses, exceptions and pagination models.</description>
 
     <dependencies>
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
+            <scope>provided</scope>
+            <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>

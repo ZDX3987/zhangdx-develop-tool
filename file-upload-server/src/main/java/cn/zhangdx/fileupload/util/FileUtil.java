@@ -101,7 +101,7 @@ public class FileUtil {
         try {
             BufferedImage bufferedImage = readImage(source, maxPixels);
             try {
-                writeWebImage(bufferedImage, target, compressionQuality);
+                WebpEncoder.write(bufferedImage, target, compressionQuality);
             } finally {
                 bufferedImage.flush();
             }
@@ -215,32 +215,36 @@ public class FileUtil {
         }
     }
 
-    private static void writeWebImage(BufferedImage bufferedImage, OutputStream target, float compressionQuality)
-            throws IOException {
-        Iterator<ImageWriter> imageWriters = ImageIO.getImageWritersByMIMEType("image/webp");
-        if (!imageWriters.hasNext()) {
-            throw FileUploadException.uploadFail("未找到 WebP 图片编码器");
-        }
-        ImageWriter writer = imageWriters.next();
-        OutputStream nonClosingTarget = new FilterOutputStream(target) {
-            @Override
-            public void close() throws IOException {
-                flush();
+    /** Keep the optional WebP implementation out of the ordinary file utilities' class initialization. */
+    private static final class WebpEncoder {
+
+        private static void write(BufferedImage bufferedImage, OutputStream target, float compressionQuality)
+                throws IOException {
+            Iterator<ImageWriter> imageWriters = ImageIO.getImageWritersByMIMEType("image/webp");
+            if (!imageWriters.hasNext()) {
+                throw FileUploadException.uploadFail("未找到 WebP 图片编码器");
             }
-        };
-        try (ImageOutputStream ios = ImageIO.createImageOutputStream(nonClosingTarget)) {
-            if (ios == null) {
-                throw FileUploadException.uploadFail("无法创建 WebP 图片输出流");
+            ImageWriter writer = imageWriters.next();
+            OutputStream nonClosingTarget = new FilterOutputStream(target) {
+                @Override
+                public void close() throws IOException {
+                    flush();
+                }
+            };
+            try (ImageOutputStream ios = ImageIO.createImageOutputStream(nonClosingTarget)) {
+                if (ios == null) {
+                    throw FileUploadException.uploadFail("无法创建 WebP 图片输出流");
+                }
+                WebPWriteParam webPWriteParam = new WebPWriteParam(writer.getLocale());
+                webPWriteParam.setCompressionMode(WebPWriteParam.MODE_EXPLICIT);
+                webPWriteParam.setCompressionType(webPWriteParam.getCompressionTypes()[WebPWriteParam.LOSSY_COMPRESSION]);
+                webPWriteParam.setCompressionQuality(compressionQuality);
+                writer.setOutput(ios);
+                writer.write(null, new IIOImage(bufferedImage, null, null), webPWriteParam);
+                ios.flush();
+            } finally {
+                writer.dispose();
             }
-            WebPWriteParam webPWriteParam = new WebPWriteParam(writer.getLocale());
-            webPWriteParam.setCompressionMode(WebPWriteParam.MODE_EXPLICIT);
-            webPWriteParam.setCompressionType(webPWriteParam.getCompressionTypes()[WebPWriteParam.LOSSY_COMPRESSION]);
-            webPWriteParam.setCompressionQuality(compressionQuality);
-            writer.setOutput(ios);
-            writer.write(null, new IIOImage(bufferedImage, null, null), webPWriteParam);
-            ios.flush();
-        } finally {
-            writer.dispose();
         }
     }
 }

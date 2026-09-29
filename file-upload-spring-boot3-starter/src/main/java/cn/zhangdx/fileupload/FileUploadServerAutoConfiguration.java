@@ -36,16 +36,23 @@ public class FileUploadServerAutoConfiguration {
         return new GeneralFileNameProcessor();
     }
 
-    @Bean
-    @Order(2)
-    @ConditionalOnProperty(prefix = "zhangdx.file-upload.image-config", name = "only-webp",  havingValue = "true")
-    public FileUploadProcessor imageFileUploadProcessor(FileUploadServerProperties properties) {
-        FileUploadServerProperties.ImageConfig imageConfig = properties.getImageConfig();
-        return new ImageFileUploadProcessor(imageConfig.getCompressionQuality(), imageConfig.getMaxPixels(),
-                imageConfig.getMaxConcurrentConversions());
+    @Configuration(proxyBeanMethods = false)
+    @ConditionalOnClass(name = "com.luciad.imageio.webp.WebPWriteParam")
+    @ConditionalOnProperty(prefix = "zhangdx.file-upload.image-config", name = "only-webp", havingValue = "true")
+    static class WebpConfiguration {
+
+        @Bean
+        @Order(2)
+        @ConditionalOnMissingBean(ImageFileUploadProcessor.class)
+        public ImageFileUploadProcessor imageFileUploadProcessor(FileUploadServerProperties properties) {
+            FileUploadServerProperties.ImageConfig imageConfig = properties.getImageConfig();
+            return new ImageFileUploadProcessor(imageConfig.getCompressionQuality(), imageConfig.getMaxPixels(),
+                    imageConfig.getMaxConcurrentConversions());
+        }
     }
 
     @Bean
+    @ConditionalOnMissingBean
     public FileUploadProcessorChain fileUploadProcessorChain(List<FileUploadProcessor> fileUploadProcessors) {
         FileUploadProcessorChain fileUploadProcessorChain = new FileUploadProcessorChain();
         fileUploadProcessorChain.batchAddProcessor(fileUploadProcessors);

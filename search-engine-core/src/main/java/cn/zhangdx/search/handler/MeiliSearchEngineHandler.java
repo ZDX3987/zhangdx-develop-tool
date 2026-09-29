@@ -7,9 +7,7 @@ import cn.zhangdx.search.query.SearchEngineQuery;
 import cn.zhangdx.search.query.SearchEngineSaveRequest;
 import cn.zhangdx.support.pagination.PageQuery;
 import cn.zhangdx.support.pagination.ResultPage;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.alibaba.fastjson2.JSON;
 import com.meilisearch.sdk.Client;
 import com.meilisearch.sdk.Index;
 import com.meilisearch.sdk.SearchRequest;
@@ -49,7 +47,8 @@ public class MeiliSearchEngineHandler extends AbstractSearchEngineHandler {
         if (Boolean.TRUE.equals(saveRequest.getRefresh())) {
             index.deleteAllDocuments();
         }
-        index.addDocumentsInBatches(JSONArray.toJSONString(documents, SerializerFeature.DisableCircularReferenceDetect),
+        // Fastjson2 disables reference detection by default, matching the previous serializer feature.
+        index.addDocumentsInBatches(JSON.toJSONString(documents),
                 100, documentTypeMetadata.primaryKeyFieldName());
     }
 
@@ -84,7 +83,7 @@ public class MeiliSearchEngineHandler extends AbstractSearchEngineHandler {
         SearchRequest searchRequest = this.genSearchRequest(searchEngineQuery);
         Searchable searchable = index.search(searchRequest);
         ResultPage<?> resultPage = new ResultPage<>(pageQuery.getCurrent(), pageQuery.getPageSize());
-        List<?> sourceRecords = JSONArray.parseArray(JSONObject.toJSONString(getFormattedHits(searchable)), searchEngineQuery.getSupportType());
+        List<?> sourceRecords = JSON.parseArray(JSON.toJSONString(getFormattedHits(searchable)), searchEngineQuery.getSupportType());
         resultPage.setRecords(this.applyConverter(sourceRecords));
         if (searchable instanceof SearchResultPaginated resultPaginated) {
             resultPage.setTotal(resultPaginated.getTotalHits());
@@ -105,7 +104,7 @@ public class MeiliSearchEngineHandler extends AbstractSearchEngineHandler {
         if (Boolean.TRUE.equals(saveRequest.getRefresh())) {
             index.deleteAllDocuments();
         }
-        index.addDocuments(JSONArray.toJSONString(document, SerializerFeature.DisableCircularReferenceDetect),
+        index.addDocuments(JSON.toJSONString(document),
                 documentTypeMetadata.primaryKeyFieldName());
     }
 
@@ -114,7 +113,7 @@ public class MeiliSearchEngineHandler extends AbstractSearchEngineHandler {
         Index index = client.index(searchEngineQuery.getDocumentIndex());
         SearchRequest searchRequest = this.genSearchRequest(searchEngineQuery);
         Searchable searchable = index.search(searchRequest);
-        return JSONArray.parseArray(JSONObject.toJSONString(searchable.getHits()), searchEngineQuery.getSupportType());
+        return JSON.parseArray(JSON.toJSONString(searchable.getHits()), searchEngineQuery.getSupportType());
     }
 
     private SearchRequest genSearchRequest(SearchEngineQuery searchEngineQuery) {
