@@ -1,6 +1,7 @@
 package cn.zhangdx.search.handler;
 
 import cn.zhangdx.search.converter.SearchEngineConverterManager;
+import cn.zhangdx.search.exception.SearchEngineServerException;
 import cn.zhangdx.search.query.SearchEngineQuery;
 import cn.zhangdx.search.query.SearchEngineSaveRequest;
 import cn.zhangdx.support.pagination.PageQuery;
@@ -67,7 +68,7 @@ public class EsSearchEngineHandler extends AbstractSearchEngineHandler {
      */
     @Override
     public <E> void saveDocument(E document, SearchEngineSaveRequest<E> saveRequest) {
-        IndexCoordinates indexCoordinates = IndexCoordinates.of(saveRequest.getIndexName());
+        IndexCoordinates indexCoordinates = IndexCoordinates.of(saveRequest.getDocumentTypeMetadata().indexName());
         if (Boolean.TRUE.equals(saveRequest.getRefresh())) {
             Query query = new StringQuery(StringQuery.MATCH_ALL);
             elasticsearchOperations.delete(query, document.getClass(), indexCoordinates);
@@ -86,7 +87,7 @@ public class EsSearchEngineHandler extends AbstractSearchEngineHandler {
         if (documents == null || documents.isEmpty()) {
             return;
         }
-        IndexCoordinates indexCoordinates = IndexCoordinates.of(saveRequest.getIndexName());
+        IndexCoordinates indexCoordinates = IndexCoordinates.of(saveRequest.getDocumentTypeMetadata().indexName());
         if (Boolean.TRUE.equals(saveRequest.getRefresh())) {
             Query query = new StringQuery(StringQuery.MATCH_ALL);
             Object[] documentsArray = documents.toArray();
@@ -95,6 +96,18 @@ public class EsSearchEngineHandler extends AbstractSearchEngineHandler {
             elasticsearchOperations.delete(query, aClass, indexCoordinates);
         }
         elasticsearchOperations.save(documents, indexCoordinates);
+    }
+
+    /**
+     * 删除指定索引下的文档
+     *
+     * @param indexName  索引名称
+     * @param primaryKey 主键key
+     * @throws SearchEngineServerException 搜索引擎服务端异常
+     */
+    @Override
+    public void deleteDocument(String indexName, String primaryKey) throws SearchEngineServerException {
+        elasticsearchOperations.delete(primaryKey, IndexCoordinates.of(indexName));
     }
 
     private NativeQueryBuilder buildNativeQuery(SearchEngineQuery searchEngineQuery) {

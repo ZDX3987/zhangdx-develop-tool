@@ -24,7 +24,7 @@ import java.util.List;
  * @author zhangdx
  * @date 2026/6/10 19:41
  */
-@AutoConfiguration
+@AutoConfiguration(afterName = "org.springframework.boot.autoconfigure.data.elasticsearch.ElasticsearchDataAutoConfiguration")
 @ConditionalOnProperty(prefix = "zhangdx.search-engine", name = "enabled", havingValue = "true")
 @EnableConfigurationProperties({SearchEngineProperties.class})
 public class SearchEngineAutoConfiguration {
@@ -49,6 +49,7 @@ public class SearchEngineAutoConfiguration {
     }
 
     @Configuration(proxyBeanMethods = false)
+    @ConditionalOnClass(ElasticsearchOperations.class)
     @ConditionalOnBean(ElasticsearchOperations.class)
     @ConditionalOnProperty(prefix = "zhangdx.search-engine", name = "type", havingValue = "elasticsearch")
     static class EsSearchConfiguration {

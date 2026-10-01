@@ -4,27 +4,25 @@
     <parent>
         <groupId>cn.zhangdx</groupId>
         <artifactId>zhangdx-develop-tool</artifactId>
-        <version>1.0.1-SNAPSHOT</version>
+        <version>1.0.2</version>
     </parent>
 
     <artifactId>common-support</artifactId>
     <packaging>jar</packaging>
 
     <name>common-support</name>
-    <url>http://maven.apache.org</url>
-
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
+    <description>Common API responses, exceptions and pagination models.</description>
 
     <dependencies>
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
+            <scope>provided</scope>
+            <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>
