@@ -103,6 +103,11 @@
                 <version>${oss.version}</version>
             </dependency>
             <dependency>
+                <groupId>com.fasterxml.jackson.datatype</groupId>
+                <artifactId>jackson-datatype-jsr310</artifactId>
+                <version>2.22.3</version>
+            </dependency>
+            <dependency>
                 <groupId>io.github.darkxanter</groupId>
                 <artifactId>webp-imageio</artifactId>
                 <version>${webp-imageio.version}</version>
