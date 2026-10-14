@@ -1,10 +1,13 @@
 package cn.zhangdx.support.json.metadata;
 
 import cn.zhangdx.support.annotation.JsonEnum;
+import cn.zhangdx.support.util.StringUtil;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Member;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -33,6 +36,17 @@ public class EnumMetadata {
         if (annotation == null) {
             throw new IllegalArgumentException(enumType.getName() + "is not annotated with @JsonEnum");
         }
+        String identity = annotation.identity();
+        if (StringUtil.isEmpty(identity)) {
+            throw new IllegalArgumentException("Identity must be not null");
+        }
+        switch (annotation.shape()) {
+            case VALUE -> {
+
+            }
+            case OBJECT -> {
+            }
+        }
         AccessorDefinition accessorDefinition = resolveAccessor(enumType);
         Object[] enumConstants = enumType.getEnumConstants();
         Map<Object, Enum<?>> reverseMapping = new HashMap<>();
@@ -47,14 +61,43 @@ public class EnumMetadata {
         Map<String, EnumProperty> properties = new HashMap<>();
         for (Field declaredField : enumType.getDeclaredFields()) {
             EnumProperty enumProperty = EnumProperty.build(declaredField);
+            enumProperty.setAccessor(e -> {
+                try {
+                    return declaredField.get(e);
+                } catch (IllegalAccessException ex) {
+                    throw new IllegalStateException("Cannot read enum value field: " + declaredField, ex);
+                }
+            });
             properties.put(declaredField.getName(), enumProperty);
         }
 
-        return new EnumMetadata(enumType, annotation.identity(), properties, reverseMapping);
+        return new EnumMetadata(enumType, identity, properties, reverseMapping);
     }
 
-    private static AccessorDefinition resolveAccessor(Class<?> enumType) {
-        return null;
+    private static AccessorDefinition resolveAccessor(Class<?> enumType, Member member) {
+        Class<?> valueType = null;
+        ValueAccessor accessor = null;
+        if (member instanceof Field field) {
+            valueType = field.getType();
+            accessor = e -> {
+                try {
+                    return field.get(e);
+                } catch (IllegalAccessException ex) {
+                    throw new IllegalStateException("Cannot read enum value field: " + field, ex);
+                }
+            };
+        } else if (member instanceof Method method) {
+            valueType = method.getReturnType();
+            accessor = e -> {
+                method.setAccessible(true);
+                try {
+                    return method.invoke(e);
+                } catch (ReflectiveOperationException ex) {
+                    throw new RuntimeException(ex);
+                }
+            };
+        }
+        return new AccessorDefinition(valueType, accessor);
     }
 
     private record AccessorDefinition(

@@ -6,7 +6,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- *
+ * 枚举JSON设置枚举
  * @author zhangdx
  * @date 2026/10/3 13:54
  */
