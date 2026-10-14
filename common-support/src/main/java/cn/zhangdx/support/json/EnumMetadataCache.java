@@ -1,5 +1,7 @@
 package cn.zhangdx.support.json;
 
+import cn.zhangdx.support.json.metadata.EnumMetadata;
+
 /**
  *
  * @author zhangdx
@@ -12,7 +14,7 @@ public final class EnumMetadataCache {
     private static final ClassValue<EnumMetadata> CACHE = new ClassValue<>() {
         @Override
         protected EnumMetadata computeValue(Class<?> type) {
-            return null;
+            return EnumMetadata.create(type);
         }
     };
 

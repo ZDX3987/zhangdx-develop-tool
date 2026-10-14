@@ -1,6 +1,7 @@
 package cn.zhangdx.support.json;
 
 import cn.zhangdx.support.annotation.JsonEnum;
+import cn.zhangdx.support.json.metadata.EnumMetadata;
 import com.fasterxml.jackson.databind.BeanDescription;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.JsonSerializer;
@@ -24,6 +25,6 @@ public class JsonEnumSerializerModifier extends BeanSerializerModifier {
         }
         EnumMetadata enumMetadata = EnumMetadataCache.get(rawClass);
 
-        return enumMetadata;
+        return new JsonEnumSerializer(enumMetadata);
     }
 }
