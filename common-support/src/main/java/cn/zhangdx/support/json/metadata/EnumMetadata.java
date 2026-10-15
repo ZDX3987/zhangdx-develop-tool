@@ -28,6 +28,10 @@ public class EnumMetadata {
 
     private final Map<Object, Enum<?>> reverseMapping;
 
+    public Enum<?> getEnumValue(Object identityValue) {
+        return reverseMapping.get(identityValue);
+    }
+
     public static EnumMetadata create(Class<?> enumType) {
         if (!enumType.isEnum()) {
             throw new IllegalArgumentException(enumType.getName() + "is not enum");
