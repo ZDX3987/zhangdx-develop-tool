@@ -1,4 +1,4 @@
-package cn.zhangdx.support.json;
+package cn.zhangdx.support.json.ext;
 
 import cn.zhangdx.support.json.metadata.EnumMetadata;
 import cn.zhangdx.support.json.metadata.EnumProperty;
@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.util.Map;
 
 /**
- *
+ * 枚举自定义属性或对象序列化器
  * @author zhangdx
  * @date 2026/10/4 14:25
  */
@@ -22,14 +22,20 @@ public class JsonEnumSerializer extends JsonSerializer<Object> {
 
     @Override
     public void serialize(Object value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
-        gen.writeStartObject();
         Map<String, EnumProperty> properties = enumMetadata.getProperties();
         Enum<?> enumValue = (Enum<?>) value;
-        for (EnumProperty enumProperty : properties.values()) {
-            gen.writeFieldName(enumProperty.getName());
-            Object propertyValue = enumProperty.getValue(enumValue);
+        if (properties.isEmpty()) {
+            EnumProperty identityProperty = enumMetadata.getIdentityProperty();
+            Object propertyValue = identityProperty.getValue(enumValue);
             serializers.defaultSerializeValue(propertyValue, gen);
+        } else {
+            gen.writeStartObject();
+            for (EnumProperty enumProperty : properties.values()) {
+                gen.writeFieldName(enumProperty.getName());
+                Object propertyValue = enumProperty.getValue(enumValue);
+                serializers.defaultSerializeValue(propertyValue, gen);
+            }
+            gen.writeEndObject();
         }
-        gen.writeEndObject();
     }
 }

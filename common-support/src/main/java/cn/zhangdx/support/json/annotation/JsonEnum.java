@@ -1,4 +1,4 @@
-package cn.zhangdx.support.annotation;
+package cn.zhangdx.support.json.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -24,9 +24,14 @@ public @interface JsonEnum {
      * JSON转化方式，默认是按值转换
      * @return JSON转化方式
      */
-    Shape shape() default Shape.VALUE;
+    Shape shape() default Shape.DEFAULT;
 
     enum Shape {
+
+        /**
+         * 默认行为
+         */
+        DEFAULT,
 
         /**
          * 按值转换

@@ -1,9 +1,7 @@
-package cn.zhangdx.support.json;
-
-import cn.zhangdx.support.json.metadata.EnumMetadata;
+package cn.zhangdx.support.json.metadata;
 
 /**
- *
+ * 枚举转JSON元数据缓存
  * @author zhangdx
  * @date 2026/10/4 10:58
  */
@@ -18,7 +16,7 @@ public final class EnumMetadataCache {
         }
     };
 
-    static EnumMetadata get(Class<?> enumType) {
+    public static EnumMetadata get(Class<?> enumType) {
         return CACHE.get(enumType);
     }
 }

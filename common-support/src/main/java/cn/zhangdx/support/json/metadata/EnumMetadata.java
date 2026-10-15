@@ -1,6 +1,6 @@
 package cn.zhangdx.support.json.metadata;
 
-import cn.zhangdx.support.annotation.JsonEnum;
+import cn.zhangdx.support.json.annotation.JsonEnum;
 import cn.zhangdx.support.util.StringUtil;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +22,7 @@ public class EnumMetadata {
 
     private final Class<?> enumType;
 
-    private final String identityProperty;
+    private final EnumProperty identityProperty;
 
     private final Map<String, EnumProperty> properties;
 
@@ -36,50 +36,55 @@ public class EnumMetadata {
         if (annotation == null) {
             throw new IllegalArgumentException(enumType.getName() + "is not annotated with @JsonEnum");
         }
+        Map<String, EnumProperty> properties = new HashMap<>();
         String identity = annotation.identity();
         if (StringUtil.isEmpty(identity)) {
             throw new IllegalArgumentException("Identity must be not null");
         }
-        switch (annotation.shape()) {
-            case VALUE -> {
-
+        EnumProperty identityProperty = null;
+        boolean isShapeValue = JsonEnum.Shape.VALUE.equals(annotation.shape());
+        for (Field declaredField : enumType.getDeclaredFields()) {
+            if (enumType.equals(declaredField.getType()) || enumType.equals(declaredField.getType().componentType())) {
+                continue;
             }
-            case OBJECT -> {
+            if (identityProperty == null && identity.equals(declaredField.getName())) {
+                identityProperty = buildProperties(declaredField);
+                if (isShapeValue) {
+                    break;
+                }
+                properties.put(declaredField.getName(), buildProperties(declaredField));
+            } else if (!isShapeValue) {
+                properties.put(declaredField.getName(), buildProperties(declaredField));
             }
         }
-        AccessorDefinition accessorDefinition = resolveAccessor(enumType);
-        Object[] enumConstants = enumType.getEnumConstants();
         Map<Object, Enum<?>> reverseMapping = new HashMap<>();
-        for (Object constant : enumConstants) {
+        for (Object constant : enumType.getEnumConstants()) {
             Enum<?> enumConstant = (Enum<?>) constant;
-            Object jsonValue = accessorDefinition.accessor().get(enumConstant);
+            Object jsonValue = identityProperty == null ? enumConstant.name()
+                    : identityProperty.getAccessor().get(enumConstant);
             if (jsonValue == null) {
                 throw new IllegalStateException("Json value cannot be null: " + enumType.getName() + "." + enumConstant.name());
             }
             reverseMapping.put(jsonValue, enumConstant);
         }
-        Map<String, EnumProperty> properties = new HashMap<>();
-        for (Field declaredField : enumType.getDeclaredFields()) {
-            EnumProperty enumProperty = EnumProperty.build(declaredField);
-            enumProperty.setAccessor(e -> {
-                try {
-                    return declaredField.get(e);
-                } catch (IllegalAccessException ex) {
-                    throw new IllegalStateException("Cannot read enum value field: " + declaredField, ex);
-                }
-            });
-            properties.put(declaredField.getName(), enumProperty);
-        }
 
-        return new EnumMetadata(enumType, identity, properties, reverseMapping);
+        return new EnumMetadata(enumType, identityProperty, properties, reverseMapping);
     }
 
-    private static AccessorDefinition resolveAccessor(Class<?> enumType, Member member) {
+    private static EnumProperty buildProperties(Field declaredField) {
+        EnumProperty enumProperty = EnumProperty.build(declaredField);
+        AccessorDefinition fieldAccessorDefinition = buildAccessorDefinition(declaredField);
+        enumProperty.setAccessor(fieldAccessorDefinition.accessor());
+        return enumProperty;
+    }
+
+    private static AccessorDefinition buildAccessorDefinition(Member member) {
         Class<?> valueType = null;
         ValueAccessor accessor = null;
         if (member instanceof Field field) {
             valueType = field.getType();
             accessor = e -> {
+                field.setAccessible(true);
                 try {
                     return field.get(e);
                 } catch (IllegalAccessException ex) {
@@ -93,7 +98,7 @@ public class EnumMetadata {
                 try {
                     return method.invoke(e);
                 } catch (ReflectiveOperationException ex) {
-                    throw new RuntimeException(ex);
+                    throw new IllegalStateException("Cannot invoke enum method: " + method.getName(), ex);
                 }
             };
         }
