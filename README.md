@@ -6,7 +6,7 @@ Java 17 工具库，包含公共 API 模型、搜索引擎封装和文件上传�
 
 | 模块 | 功能 | 调用方需要选择的依赖 |
 | --- | --- | --- |
-| `common-support` | 分页、响应、异常模型 | 无运行时第三方依赖 |
+| `common-support` | 分页、响应、异常模型、JDBC 业务 ID | 公共模型无运行时第三方依赖；JDBC 发号按需添加 Spring JDBC / 事务、日志 API 与驱动 |
 | `search-engine-core` | 搜索接口、Elasticsearch / Meilisearch 实现 | 对应的引擎依赖；Fastjson2 随库提供 |
 | `search-engine-spring-boot3-starter` | 按类路径和配置装配搜索实现 | Elasticsearch Starter 或 Meilisearch SDK |
 | `file-upload-server` | 上传接口、处理链、OSS 实现、WebP 转换 | 使用 OSS / WebP 时添加对应依赖 |
@@ -83,6 +83,8 @@ zhangdx:
 ```
 
 `only-webp=true` 和 WebP 编码库同时存在时才会注册转换处理器；缺少编码库时跳过该处理器，不代表已经完成格式转换。调用方应确保目标运行平台支持所选编码库的本地实现。
+
+JDBC 业务 ID 工具支持配置表名、列名、号码池、初始水位、ID 上限及事务超时，可选自动初始化号码池。普通 Java 与 Spring Boot 3 的接入示例见 [JDBC 业务 ID 生成器](docs/jdbc-id-generator.md)。
 
 ## 构建与验证
 
